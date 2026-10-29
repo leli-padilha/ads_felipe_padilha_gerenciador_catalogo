@@ -4,10 +4,118 @@
                 xmlns:ui="jakarta.faces.facelets"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/template.xhtml">
+
+    <ui:define name="head">
+        <h:outputStylesheet name="catalogo.css" library="catalogo"/>
+    </ui:define>
+
     <ui:define name="title">Catálogo de Pranchas</ui:define>
+
     <ui:define name="content">
-        <p:panel header="Gerenciador de Catálogo de Pranchas de Surf">
-            <h:outputText value="Projeto base rodando com PrimeFaces + Manhattan." />
-        </p:panel>
+        <h:form id="frmCatalogo">
+            <div class="catalogo-topo">
+                <div>
+                    <h1>Catálogo de pranchas</h1>
+                    <p>Vitrine pública. A lista abaixo é fixa, até o cadastro entrar no ar.</p>
+                </div>
+                <span class="catalogo-total">#{catalogoBean.pranchas.size()} pranchas</span>
+            </div>
+
+            <div class="grid catalogo-grid">
+                <ui:repeat id="lista" value="#{catalogoBean.pranchas}" var="prancha">
+                    <div class="col-12 md:col-6 xl:col-4">
+                        <p:card styleClass="catalogo-card">
+                            <f:facet name="header">
+                                <div class="catalogo-banner banner-#{prancha.estilo}">
+                                    <span class="tipo">#{prancha.tipo}</span>
+                                    <span class="medida">#{prancha.tamanho}</span>
+                                </div>
+                            </f:facet>
+
+                            <f:facet name="title">#{prancha.nome}</f:facet>
+                            <f:facet name="subtitle">#{prancha.marca}</f:facet>
+
+                            <div class="catalogo-marca">
+                                <p:tag value="#{prancha.nivel}"
+                                       severity="#{catalogoBean.severidade(prancha.nivel)}"/>
+                            </div>
+
+                            <ul class="catalogo-specs">
+                                <li>
+                                    <span>Tamanho</span>
+                                    <strong>#{prancha.tamanho}</strong>
+                                </li>
+                                <li>
+                                    <span>Volume</span>
+                                    <strong>
+                                        <h:outputText value="#{prancha.volume}">
+                                            <f:convertNumber minFractionDigits="1" maxFractionDigits="1"/>
+                                        </h:outputText>
+                                        L
+                                    </strong>
+                                </li>
+                                <li>
+                                    <span>Quilha</span>
+                                    <strong>#{prancha.quilha}</strong>
+                                </li>
+                            </ul>
+
+                            <f:facet name="footer">
+                                <span class="catalogo-preco">
+                                    <h:outputText value="#{prancha.preco}">
+                                        <f:convertNumber type="currency" currencySymbol="R$ " locale="pt_BR"/>
+                                    </h:outputText>
+                                </span>
+                                <p:commandButton id="btnDetalhe" value="Detalhes" icon="pi pi-search"
+                                                 process="@this"
+                                                 update=":frmCatalogo:dlgDetalhe"
+                                                 action="#{catalogoBean.selecionar(prancha.id)}"
+                                                 oncomplete="PF('dlgDetalhe').show()"/>
+                            </f:facet>
+                        </p:card>
+                    </div>
+                </ui:repeat>
+            </div>
+
+            <p:dialog id="dlgDetalhe" widgetVar="dlgDetalhe" modal="true" responsive="true"
+                      header="Detalhes da prancha" style="width: 32rem">
+                <h:panelGroup id="detalheConteudo" layout="block" styleClass="catalogo-detalhe"
+                              rendered="#{catalogoBean.selecionada ne null}">
+                    <h2>#{catalogoBean.selecionada.nome}</h2>
+                    <p>#{catalogoBean.selecionada.descricao}</p>
+                    <ul class="catalogo-specs">
+                        <li>
+                            <span>Marca</span>
+                            <strong>#{catalogoBean.selecionada.marca}</strong>
+                        </li>
+                        <li>
+                            <span>Tipo</span>
+                            <strong>#{catalogoBean.selecionada.tipo}</strong>
+                        </li>
+                        <li>
+                            <span>Nível</span>
+                            <strong>#{catalogoBean.selecionada.nivel}</strong>
+                        </li>
+                        <li>
+                            <span>Tamanho</span>
+                            <strong>#{catalogoBean.selecionada.tamanho}</strong>
+                        </li>
+                        <li>
+                            <span>Volume</span>
+                            <strong>#{catalogoBean.selecionada.volume} L</strong>
+                        </li>
+                        <li>
+                            <span>Quilha</span>
+                            <strong>#{catalogoBean.selecionada.quilha}</strong>
+                        </li>
+                    </ul>
+                    <p class="catalogo-preco" style="margin-top: 1rem">
+                        <h:outputText value="#{catalogoBean.selecionada.preco}">
+                            <f:convertNumber type="currency" currencySymbol="R$ " locale="pt_BR"/>
+                        </h:outputText>
+                    </p>
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
     </ui:define>
 </ui:composition>

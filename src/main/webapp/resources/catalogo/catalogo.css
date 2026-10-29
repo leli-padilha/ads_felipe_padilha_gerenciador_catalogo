@@ -1,0 +1,135 @@
+.catalogo-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.catalogo-topo h1 {
+    margin: 0 0 0.25rem;
+    font-size: 1.75rem;
+}
+
+.catalogo-topo p {
+    margin: 0;
+    color: #607d8b;
+}
+
+.catalogo-total {
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    background: #e0f7fa;
+    color: #006064;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.catalogo-grid {
+    align-items: stretch;
+}
+
+.catalogo-card.ui-card {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+    background: #fff;
+}
+
+.catalogo-card .ui-card-body {
+    flex: 1 1 auto;
+}
+
+.catalogo-card .ui-card-content {
+    padding-top: 0.75rem;
+}
+
+.catalogo-card .ui-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.catalogo-banner {
+    min-height: 132px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    color: #fff;
+}
+
+.catalogo-banner .tipo {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.catalogo-banner .medida {
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.banner-fish { background: linear-gradient(135deg, #00838f, #26c6da); }
+.banner-shortboard { background: linear-gradient(135deg, #1565c0, #42a5f5); }
+.banner-longboard { background: linear-gradient(135deg, #ef6c00, #ffb74d); }
+.banner-funboard { background: linear-gradient(135deg, #2e7d32, #81c784); }
+.banner-gun { background: linear-gradient(135deg, #4527a0, #7e57c2); }
+
+.catalogo-marca {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.catalogo-specs {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.catalogo-specs li {
+    background: #f5f7f8;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.catalogo-specs span {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #78909c;
+}
+
+.catalogo-specs strong {
+    display: block;
+    margin-top: 0.15rem;
+}
+
+.catalogo-preco {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #006064;
+}
+
+.catalogo-detalhe p {
+    margin-top: 0;
+    line-height: 1.5;
+}
+
+@media screen and (max-width: 640px) {
+    .catalogo-topo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
