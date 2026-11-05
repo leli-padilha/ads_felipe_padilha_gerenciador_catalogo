@@ -7,3 +7,5 @@
 # 28/10 foi realizado uns ajustes de layout da pagina inicial responsável por listar todas as pranchas do catalogo, também foi criado os cards das pranchas com uma lista fixa para testar a listagem dos cards.
 
 # Para a próxima aula será feito a conexão com o banco de dados, criar o login e criar as telas de cadastro e manuteção do catálogo, ou seja os cruds.
+
+# 04/11 foi realizado a configuração e conexão com o banco de dados, criado o model de marca, definido perfis de usuarios. 
