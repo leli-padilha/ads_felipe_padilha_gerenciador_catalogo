@@ -1,0 +1,20 @@
+/* O tema esconde o menu no modo slim e abaixo de 1280px. Mantém a sidebar na tela. */
+@media (min-width: 769px) {
+    .layout-wrapper.layout-static .layout-sidebar,
+    .layout-wrapper.layout-slim .layout-sidebar {
+        left: 0;
+        width: 270px;
+        height: 100%;
+        top: 0;
+    }
+
+    .layout-wrapper.layout-static .layout-main,
+    .layout-wrapper.layout-slim .layout-main {
+        margin-left: 270px;
+    }
+
+    .layout-wrapper.layout-static .layout-main .layout-topbar,
+    .layout-wrapper.layout-slim .layout-main .layout-topbar {
+        width: calc(100% - 270px);
+    }
+}

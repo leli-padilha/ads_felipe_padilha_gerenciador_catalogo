@@ -27,7 +27,29 @@ public class Marca implements Serializable {
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;
 
-    // gere getters e setters pela IDE (NetBeans: Alt+Insert > Getter and Setter)
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
 
     @Override
     public int hashCode() { return Objects.hashCode(id); }

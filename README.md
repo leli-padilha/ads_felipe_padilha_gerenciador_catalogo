@@ -9,3 +9,5 @@
 # Para a próxima aula será feito a conexão com o banco de dados, criar o login e criar as telas de cadastro e manuteção do catálogo, ou seja os cruds.
 
 # 04/11 foi realizado a configuração e conexão com o banco de dados, criado o model de marca, definido perfis de usuarios. 
+
+# 11/11 foi criado todos os models, controllers, facades e demais pastas e arquivos de funcionalidades importantes para o funcionamento do cms.

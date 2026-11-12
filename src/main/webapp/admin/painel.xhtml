@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">Painel</ui:define>
+    <ui:define name="content">
+        <h1>Painel do catálogo</h1>
+        <p>Olá, #{loginController.usuarioLogado.nome}. Perfil: #{loginController.usuarioLogado.perfil.descricao}.</p>
+        <div class="grid">
+            <div class="col-12 md:col-4">
+                <p:panel header="Pranchas">
+                    <p>Cadastro, imagem, valor e vínculos do catálogo.</p>
+                    <p:button outcome="/admin/prancha.xhtml" value="Abrir" icon="pi pi-arrow-right"/>
+                </p:panel>
+            </div>
+            <div class="col-12 md:col-4">
+                <p:panel header="Marcas">
+                    <p>Marcas usadas nas pranchas.</p>
+                    <p:button outcome="/admin/marca.xhtml" value="Abrir" icon="pi pi-arrow-right"/>
+                </p:panel>
+            </div>
+            <div class="col-12 md:col-4">
+                <p:panel header="Construções">
+                    <p>Tipos de construção da prancha.</p>
+                    <p:button outcome="/admin/construcao.xhtml" value="Abrir" icon="pi pi-arrow-right"/>
+                </p:panel>
+            </div>
+            <div class="col-12 md:col-4">
+                <p:panel header="Quilhas">
+                    <p>Configurações de quilha.</p>
+                    <p:button outcome="/admin/quilha.xhtml" value="Abrir" icon="pi pi-arrow-right"/>
+                </p:panel>
+            </div>
+            <div class="col-12 md:col-4">
+                <p:panel header="Pinturas">
+                    <p>Acabamentos e pinturas.</p>
+                    <p:button outcome="/admin/pintura.xhtml" value="Abrir" icon="pi pi-arrow-right"/>
+                </p:panel>
+            </div>
+            <div class="col-12 md:col-4">
+                <p:panel header="Usuários" rendered="#{loginController.admin}">
+                    <p>Administradores e editores do painel.</p>
+                    <p:button outcome="/admin/usuario.xhtml" value="Abrir" icon="pi pi-arrow-right"/>
+                </p:panel>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

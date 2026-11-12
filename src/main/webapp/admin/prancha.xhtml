@@ -1,0 +1,174 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">Pranchas</ui:define>
+    <ui:define name="content">
+        <h:form id="frmList">
+            <h:panelGroup id="pngList">
+                <p:growl id="growl" showDetail="true"/>
+                <h1>Pranchas</h1>
+                <p:dataTable id="datalist" value="#{pranchaController.pranchaList}" var="item"
+                             selectionMode="single" selection="#{pranchaController.selected}"
+                             rowKey="#{item.id}" paginator="true" rows="8"
+                             emptyMessage="Nenhuma prancha cadastrada.">
+                    <p:ajax event="rowSelect" update="btnEdit btnDelete"/>
+                    <p:ajax event="rowUnselect" update="btnEdit btnDelete"/>
+                    <p:column headerText="Foto" width="8%">
+                        <img src="#{request.contextPath}/imagens/#{item.imagem}" alt=""
+                             style="height:42px; width:42px; object-fit:cover; border-radius:6px"
+                             rendered="#{not empty item.imagem}"/>
+                    </p:column>
+                    <p:column headerText="Nome" sortBy="#{item.nome}" filterBy="#{item.nome}">#{item.nome}</p:column>
+                    <p:column headerText="Marca" sortBy="#{item.marca.nome}">#{item.marca.nome}</p:column>
+                    <p:column headerText="Valor" sortBy="#{item.valor}" width="14%">
+                        <h:outputText value="#{item.valor}">
+                            <f:convertNumber type="currency" currencySymbol="R$ " locale="pt_BR"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Ativo" sortBy="#{item.ativo}" width="10%">#{item.ativo ? 'Sim' : 'Não'}</p:column>
+                    <f:facet name="footer">
+                        <p:commandButton value="Incluir" icon="pi pi-plus"
+                                         action="#{pranchaController.prepareCreate}"
+                                         update=":formCreate" process="@this"
+                                         oncomplete="PF('dlgCreate').show()"/>
+                        <p:commandButton id="btnEdit" value="Editar" icon="pi pi-pencil"
+                                         update=":formEdit" process="@this"
+                                         oncomplete="PF('dlgEdit').show()"
+                                         disabled="#{empty pranchaController.selected}"/>
+                        <p:commandButton id="btnDelete" value="Excluir" icon="pi pi-trash"
+                                         actionListener="#{pranchaController.excluir}"
+                                         update="pngList" process="@this"
+                                         disabled="#{empty pranchaController.selected}">
+                            <p:confirm header="Excluir prancha" message="Confirma a exclusão?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </f:facet>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="dlgCreate" header="Nova prancha" modal="true" responsive="true" style="width: 40rem">
+            <h:form id="formCreate" enctype="multipart/form-data">
+                <div class="ui-fluid">
+                    <p:outputLabel for="nome" value="Nome"/>
+                    <p:inputText id="nome" value="#{pranchaController.prancha.nome}" required="true" requiredMessage="Informe o nome."/>
+                    <p:outputLabel for="valor" value="Valor" style="display:block; margin-top:1rem"/>
+                    <p:inputNumber id="valor" value="#{pranchaController.prancha.valor}" symbol="R$ " decimalPlaces="2"
+                                   decimalSeparator="," thousandSeparator="." required="true" requiredMessage="Informe o valor."/>
+                    <p:outputLabel for="descricao" value="Descrição" style="display:block; margin-top:1rem"/>
+                    <p:inputTextarea id="descricao" value="#{pranchaController.prancha.descricao}" rows="3"/>
+                    <div class="grid" style="margin-top:1rem">
+                        <div class="col-12 md:col-6">
+                            <p:outputLabel for="marca" value="Marca"/>
+                            <p:selectOneMenu id="marca" value="#{pranchaController.prancha.marca}" converter="marcaConverter" required="true" requiredMessage="Selecione a marca.">
+                                <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                <f:selectItems value="#{marcaController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p:outputLabel for="construcao" value="Construção"/>
+                            <p:selectOneMenu id="construcao" value="#{pranchaController.prancha.construcao}" converter="construcaoConverter" required="true" requiredMessage="Selecione a construção.">
+                                <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                <f:selectItems value="#{construcaoController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p:outputLabel for="quilha" value="Quilha"/>
+                            <p:selectOneMenu id="quilha" value="#{pranchaController.prancha.quilha}" converter="quilhaConverter" required="true" requiredMessage="Selecione a quilha.">
+                                <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                <f:selectItems value="#{quilhaController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                            </p:selectOneMenu>
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <p:outputLabel for="pintura" value="Pintura"/>
+                            <p:selectOneMenu id="pintura" value="#{pranchaController.prancha.pintura}" converter="pinturaConverter" required="true" requiredMessage="Selecione a pintura.">
+                                <f:selectItem itemLabel="Selecione" noSelectionOption="true"/>
+                                <f:selectItems value="#{pinturaController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                            </p:selectOneMenu>
+                        </div>
+                    </div>
+                    <p:selectBooleanCheckbox value="#{pranchaController.prancha.ativo}" itemLabel="Ativo" style="margin-top:1rem"/>
+                    <h:panelGroup id="previewNova" layout="block" style="margin-top:1rem">
+                        <img src="#{request.contextPath}/imagens/#{pranchaController.prancha.imagem}" alt="Prévia"
+                             style="max-height:120px; border-radius:8px"
+                             rendered="#{not empty pranchaController.prancha.imagem}"/>
+                    </h:panelGroup>
+                    <p:fileUpload mode="advanced" auto="true" accept="image/*" sizeLimit="5000000"
+                                  listener="#{pranchaController.uploadNova}" update="previewNova growlUpload"
+                                  label="Escolher imagem" uploadLabel="Enviar" cancelLabel="Cancelar"
+                                  invalidSizeMessage="A imagem deve ter no máximo 5 MB."/>
+                    <p:growl id="growlUpload" showDetail="true"/>
+                </div>
+                <div style="margin-top:1rem; text-align:right">
+                    <p:commandButton value="Salvar" icon="pi pi-check" action="#{pranchaController.adicionar}"
+                                     update=":frmList:pngList formCreate"
+                                     oncomplete="if (args &amp;&amp; args.salvo) PF('dlgCreate').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgEdit" header="Editar prancha" modal="true" responsive="true" style="width: 40rem">
+            <h:form id="formEdit" enctype="multipart/form-data">
+                <h:panelGroup layout="block" rendered="#{pranchaController.selected ne null}">
+                    <div class="ui-fluid">
+                        <p:outputLabel for="nomeEdit" value="Nome"/>
+                        <p:inputText id="nomeEdit" value="#{pranchaController.selected.nome}" required="true" requiredMessage="Informe o nome."/>
+                        <p:outputLabel for="valorEdit" value="Valor" style="display:block; margin-top:1rem"/>
+                        <p:inputNumber id="valorEdit" value="#{pranchaController.selected.valor}" symbol="R$ " decimalPlaces="2"
+                                       decimalSeparator="," thousandSeparator="." required="true" requiredMessage="Informe o valor."/>
+                        <p:outputLabel for="descricaoEdit" value="Descrição" style="display:block; margin-top:1rem"/>
+                        <p:inputTextarea id="descricaoEdit" value="#{pranchaController.selected.descricao}" rows="3"/>
+                        <div class="grid" style="margin-top:1rem">
+                            <div class="col-12 md:col-6">
+                                <p:outputLabel for="marcaEdit" value="Marca"/>
+                                <p:selectOneMenu id="marcaEdit" value="#{pranchaController.selected.marca}" converter="marcaConverter" required="true">
+                                    <f:selectItems value="#{marcaController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <p:outputLabel for="construcaoEdit" value="Construção"/>
+                                <p:selectOneMenu id="construcaoEdit" value="#{pranchaController.selected.construcao}" converter="construcaoConverter" required="true">
+                                    <f:selectItems value="#{construcaoController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <p:outputLabel for="quilhaEdit" value="Quilha"/>
+                                <p:selectOneMenu id="quilhaEdit" value="#{pranchaController.selected.quilha}" converter="quilhaConverter" required="true">
+                                    <f:selectItems value="#{quilhaController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="col-12 md:col-6">
+                                <p:outputLabel for="pinturaEdit" value="Pintura"/>
+                                <p:selectOneMenu id="pinturaEdit" value="#{pranchaController.selected.pintura}" converter="pinturaConverter" required="true">
+                                    <f:selectItems value="#{pinturaController.ativas}" var="op" itemValue="#{op}" itemLabel="#{op.nome}"/>
+                                </p:selectOneMenu>
+                            </div>
+                        </div>
+                        <p:selectBooleanCheckbox value="#{pranchaController.selected.ativo}" itemLabel="Ativo" style="margin-top:1rem"/>
+                        <h:panelGroup id="previewEdit" layout="block" style="margin-top:1rem">
+                            <img src="#{request.contextPath}/imagens/#{pranchaController.selected.imagem}" alt="Prévia"
+                                 style="max-height:120px; border-radius:8px"
+                                 rendered="#{not empty pranchaController.selected.imagem}"/>
+                        </h:panelGroup>
+                        <p:fileUpload mode="advanced" auto="true" accept="image/*" sizeLimit="5000000"
+                                      listener="#{pranchaController.uploadEdicao}" update="previewEdit growlUploadEdit"
+                                      label="Trocar imagem" uploadLabel="Enviar" cancelLabel="Cancelar"
+                                      invalidSizeMessage="A imagem deve ter no máximo 5 MB."/>
+                        <p:growl id="growlUploadEdit" showDetail="true"/>
+                    </div>
+                    <div style="margin-top:1rem; text-align:right">
+                        <p:commandButton value="Salvar" icon="pi pi-check" action="#{pranchaController.editar}"
+                                         update=":frmList:pngList formEdit"
+                                         oncomplete="if (args &amp;&amp; args.salvo) PF('dlgEdit').hide()"/>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

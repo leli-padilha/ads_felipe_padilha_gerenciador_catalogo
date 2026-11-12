@@ -10,7 +10,7 @@ import java.util.List;
 @SessionScoped
 public class GuestPreferences implements Serializable {
 
-    private String layoutMode = "layout-slim";
+    private String layoutMode = "layout-static";
     private String menuColor = "light";
     private String inputStyle = "outlined";
     private String theme = "cyan-deeporange";

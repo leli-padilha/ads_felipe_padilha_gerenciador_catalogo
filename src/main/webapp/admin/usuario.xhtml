@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">Usuários</ui:define>
+    <ui:define name="content">
+        <h:form id="frmList">
+            <h:panelGroup id="pngList">
+                <p:growl id="growl" showDetail="true"/>
+                <h1>Usuários</h1>
+                <p:dataTable id="datalist" value="#{usuarioController.usuarioList}" var="item"
+                             selectionMode="single" selection="#{usuarioController.selected}"
+                             rowKey="#{item.id}" paginator="true" rows="10"
+                             emptyMessage="Nenhum usuário cadastrado.">
+                    <p:ajax event="rowSelect" update="btnEdit btnDelete"/>
+                    <p:ajax event="rowUnselect" update="btnEdit btnDelete"/>
+                    <p:column headerText="Nome" sortBy="#{item.nome}" filterBy="#{item.nome}">#{item.nome}</p:column>
+                    <p:column headerText="E-mail" sortBy="#{item.email}" filterBy="#{item.email}">#{item.email}</p:column>
+                    <p:column headerText="Perfil" sortBy="#{item.perfil}" width="16%">#{item.perfil.descricao}</p:column>
+                    <p:column headerText="Ativo" sortBy="#{item.ativo}" width="12%">#{item.ativo ? 'Sim' : 'Não'}</p:column>
+                    <f:facet name="footer">
+                        <p:commandButton value="Incluir" icon="pi pi-plus"
+                                         action="#{usuarioController.prepareCreate}"
+                                         update=":formCreate" process="@this"
+                                         oncomplete="PF('dlgCreate').show()"/>
+                        <p:commandButton id="btnEdit" value="Editar" icon="pi pi-pencil"
+                                         update=":formEdit" process="@this"
+                                         oncomplete="PF('dlgEdit').show()"
+                                         disabled="#{empty usuarioController.selected}"/>
+                        <p:commandButton id="btnDelete" value="Excluir" icon="pi pi-trash"
+                                         actionListener="#{usuarioController.excluir}"
+                                         update="pngList" process="@this"
+                                         disabled="#{empty usuarioController.selected}">
+                            <p:confirm header="Excluir usuário" message="Confirma a exclusão?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </f:facet>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="dlgCreate" header="Novo usuário" modal="true" responsive="true" style="width: 32rem">
+            <h:form id="formCreate">
+                <div class="ui-fluid">
+                    <p:outputLabel for="nome" value="Nome"/>
+                    <p:inputText id="nome" value="#{usuarioController.usuario.nome}" required="true" requiredMessage="Informe o nome."/>
+                    <p:outputLabel for="email" value="E-mail" style="display:block; margin-top:1rem"/>
+                    <p:inputText id="email" value="#{usuarioController.usuario.email}" required="true" requiredMessage="Informe o e-mail."/>
+                    <p:outputLabel for="senha" value="Senha" style="display:block; margin-top:1rem"/>
+                    <p:password id="senha" value="#{usuarioController.usuario.senha}" required="true" requiredMessage="Informe a senha." feedback="false"/>
+                    <p:outputLabel for="perfil" value="Perfil" style="display:block; margin-top:1rem"/>
+                    <p:selectOneMenu id="perfil" value="#{usuarioController.usuario.perfil}" required="true">
+                        <f:selectItems value="#{perfilController.perfis}" var="perfil" itemValue="#{perfil}" itemLabel="#{perfil.descricao}"/>
+                    </p:selectOneMenu>
+                    <p:selectBooleanCheckbox value="#{usuarioController.usuario.ativo}" itemLabel="Ativo" style="margin-top:1rem"/>
+                </div>
+                <div style="margin-top:1rem; text-align:right">
+                    <p:commandButton value="Salvar" icon="pi pi-check" action="#{usuarioController.adicionar}"
+                                     update=":frmList:pngList formCreate"
+                                     oncomplete="if (args &amp;&amp; args.salvo) PF('dlgCreate').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgEdit" header="Editar usuário" modal="true" responsive="true" style="width: 32rem">
+            <h:form id="formEdit">
+                <h:panelGroup layout="block" rendered="#{usuarioController.selected ne null}">
+                    <div class="ui-fluid">
+                        <p:outputLabel for="nomeEdit" value="Nome"/>
+                        <p:inputText id="nomeEdit" value="#{usuarioController.selected.nome}" required="true" requiredMessage="Informe o nome."/>
+                        <p:outputLabel for="emailEdit" value="E-mail" style="display:block; margin-top:1rem"/>
+                        <p:inputText id="emailEdit" value="#{usuarioController.selected.email}" required="true" requiredMessage="Informe o e-mail."/>
+                        <p:outputLabel for="senhaEdit" value="Nova senha" style="display:block; margin-top:1rem"/>
+                        <p:password id="senhaEdit" value="#{usuarioController.selected.senha}" feedback="false" placeholder="Em branco mantém a senha atual"/>
+                        <p:outputLabel for="perfilEdit" value="Perfil" style="display:block; margin-top:1rem"/>
+                        <p:selectOneMenu id="perfilEdit" value="#{usuarioController.selected.perfil}" required="true">
+                            <f:selectItems value="#{perfilController.perfis}" var="perfil" itemValue="#{perfil}" itemLabel="#{perfil.descricao}"/>
+                        </p:selectOneMenu>
+                        <p:selectBooleanCheckbox value="#{usuarioController.selected.ativo}" itemLabel="Ativo" style="margin-top:1rem"/>
+                    </div>
+                    <div style="margin-top:1rem; text-align:right">
+                        <p:commandButton value="Salvar" icon="pi pi-check" action="#{usuarioController.editar}"
+                                         update=":frmList:pngList formEdit"
+                                         oncomplete="if (args &amp;&amp; args.salvo) PF('dlgEdit').hide()"/>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

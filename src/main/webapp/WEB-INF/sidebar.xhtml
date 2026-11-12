@@ -21,12 +21,66 @@
                             <span>Catálogo</span>
                         </h:link>
                     </li>
-                    <li>
-                        <h:link outcome="/login.xhtml">
-                            <i class="layout-menuitem-icon pi pi-fw pi-sign-in"/>
-                            <span>Login</span>
-                        </h:link>
-                    </li>
+                    <ui:fragment rendered="#{loginController.logado}">
+                        <li>
+                            <h:link outcome="/admin/painel.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-th-large"/>
+                                <span>Painel</span>
+                            </h:link>
+                        </li>
+                        <li>
+                            <h:link outcome="/admin/prancha.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-image"/>
+                                <span>Pranchas</span>
+                            </h:link>
+                        </li>
+                        <li>
+                            <h:link outcome="/admin/marca.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-tag"/>
+                                <span>Marcas</span>
+                            </h:link>
+                        </li>
+                        <li>
+                            <h:link outcome="/admin/construcao.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-box"/>
+                                <span>Construções</span>
+                            </h:link>
+                        </li>
+                        <li>
+                            <h:link outcome="/admin/quilha.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-sliders-h"/>
+                                <span>Quilhas</span>
+                            </h:link>
+                        </li>
+                        <li>
+                            <h:link outcome="/admin/pintura.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-palette"/>
+                                <span>Pinturas</span>
+                            </h:link>
+                        </li>
+                        <ui:fragment rendered="#{loginController.admin}">
+                            <li>
+                                <h:link outcome="/admin/usuario.xhtml">
+                                    <i class="layout-menuitem-icon pi pi-fw pi-users"/>
+                                    <span>Usuários</span>
+                                </h:link>
+                            </li>
+                        </ui:fragment>
+                        <li>
+                            <h:commandLink action="#{loginController.logout}">
+                                <i class="layout-menuitem-icon pi pi-fw pi-sign-out"/>
+                                <span>Sair</span>
+                            </h:commandLink>
+                        </li>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{not loginController.logado}">
+                        <li>
+                            <h:link outcome="/login.xhtml">
+                                <i class="layout-menuitem-icon pi pi-fw pi-sign-in"/>
+                                <span>Login</span>
+                            </h:link>
+                        </li>
+                    </ui:fragment>
                 </ul>
             </h:form>
         </div>

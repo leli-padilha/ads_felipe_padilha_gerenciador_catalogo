@@ -1,0 +1,79 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+    <ui:define name="title">Construções</ui:define>
+    <ui:define name="content">
+        <h:form id="frmList">
+            <h:panelGroup id="pngList">
+                <p:growl id="growl" showDetail="true"/>
+                <h1>Construções</h1>
+                <p:dataTable id="datalist" value="#{construcaoController.construcaoList}" var="item"
+                             selectionMode="single" selection="#{construcaoController.selected}"
+                             rowKey="#{item.id}" paginator="true" rows="10"
+                             rowsPerPageTemplate="5,10,20" emptyMessage="Nenhuma construção cadastrada.">
+                    <p:ajax event="rowSelect" update="btnEdit btnDelete"/>
+                    <p:ajax event="rowUnselect" update="btnEdit btnDelete"/>
+                    <p:column headerText="ID" sortBy="#{item.id}" width="8%">#{item.id}</p:column>
+                    <p:column headerText="Nome" sortBy="#{item.nome}" filterBy="#{item.nome}">#{item.nome}</p:column>
+                    <p:column headerText="Descrição" sortBy="#{item.descricao}">#{item.descricao}</p:column>
+                    <p:column headerText="Ativo" sortBy="#{item.ativo}" width="12%">#{item.ativo ? 'Sim' : 'Não'}</p:column>
+                    <f:facet name="footer">
+                        <p:commandButton value="Incluir" icon="pi pi-plus"
+                                         action="#{construcaoController.prepareCreate}"
+                                         update=":formCreate" process="@this"
+                                         oncomplete="PF('dlgCreate').show()"/>
+                        <p:commandButton id="btnEdit" value="Editar" icon="pi pi-pencil"
+                                         update=":formEdit" process="@this"
+                                         oncomplete="PF('dlgEdit').show()"
+                                         disabled="#{empty construcaoController.selected}"/>
+                        <p:commandButton id="btnDelete" value="Excluir" icon="pi pi-trash"
+                                         actionListener="#{construcaoController.excluir}"
+                                         update="pngList" process="@this"
+                                         disabled="#{empty construcaoController.selected}">
+                            <p:confirm header="Excluir construção" message="Confirma a exclusão?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </f:facet>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
+            </h:panelGroup>
+        </h:form>
+
+        <p:dialog widgetVar="dlgCreate" header="Nova construção" modal="true" responsive="true" style="width: 32rem">
+            <h:form id="formCreate">
+                <p:outputLabel for="nome" value="Nome"/>
+                <p:inputText id="nome" value="#{construcaoController.construcao.nome}" required="true" requiredMessage="Informe o nome." style="width:100%"/>
+                <p:outputLabel for="descricao" value="Descrição" style="display:block; margin-top:1rem"/>
+                <p:inputTextarea id="descricao" value="#{construcaoController.construcao.descricao}" rows="3" style="width:100%"/>
+                <p:selectBooleanCheckbox value="#{construcaoController.construcao.ativo}" itemLabel="Ativo" style="margin-top:1rem"/>
+                <div style="margin-top:1rem; text-align:right">
+                    <p:commandButton value="Salvar" icon="pi pi-check" action="#{construcaoController.adicionar}"
+                                     update=":frmList:pngList formCreate"
+                                     oncomplete="if (args &amp;&amp; args.salvo) PF('dlgCreate').hide()"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <p:dialog widgetVar="dlgEdit" header="Editar construção" modal="true" responsive="true" style="width: 32rem">
+            <h:form id="formEdit">
+                <h:panelGroup layout="block" rendered="#{construcaoController.selected ne null}">
+                    <p:outputLabel for="nomeEdit" value="Nome"/>
+                    <p:inputText id="nomeEdit" value="#{construcaoController.selected.nome}" required="true" requiredMessage="Informe o nome." style="width:100%"/>
+                    <p:outputLabel for="descricaoEdit" value="Descrição" style="display:block; margin-top:1rem"/>
+                    <p:inputTextarea id="descricaoEdit" value="#{construcaoController.selected.descricao}" rows="3" style="width:100%"/>
+                    <p:selectBooleanCheckbox value="#{construcaoController.selected.ativo}" itemLabel="Ativo" style="margin-top:1rem"/>
+                    <div style="margin-top:1rem; text-align:right">
+                        <p:commandButton value="Salvar" icon="pi pi-check" action="#{construcaoController.editar}"
+                                         update=":frmList:pngList formEdit"
+                                         oncomplete="if (args &amp;&amp; args.salvo) PF('dlgEdit').hide()"/>
+                    </div>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
